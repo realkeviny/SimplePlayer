@@ -17,4 +17,5 @@ INCLUDEPATH += .
 HEADERS += Player.h x64/Debug/uic/ui_Player.h /x64/Debug/uic/ui_Player.h
 FORMS += Player.ui
 SOURCES += main.cpp Player.cpp x64/Debug/rcc/qrc_Player.cpp
-RESOURCES += Player.qrc
+RESOURCES += Player.qrc \
+    Customization.qrc

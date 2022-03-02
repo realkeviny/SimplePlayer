@@ -1,4 +1,5 @@
 <RCC>
-    <qresource prefix="Player">
+    <qresource prefix="/Player">
+        <file>Player.ico</file>
     </qresource>
 </RCC>

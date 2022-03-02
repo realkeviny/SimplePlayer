@@ -8,6 +8,11 @@
 #include <QString>
 #include <QFileDialog>
 #include <QListWidgetItem>
+#include "Lyrics.h"
+#include <QSystemTrayIcon>
+#include <QIcon>
+#include <QMenu>
+#include <QCloseEvent>
 
 class Player : public QMainWindow
 {
@@ -16,7 +21,7 @@ class Player : public QMainWindow
 public:
     Player(QWidget *parent = Q_NULLPTR);
     QString setTime(qint64 time);
-
+    ~Player();
 private slots:
     void onbtnPlayClicked();
     void onProgressBarMoved(int pos);
@@ -30,6 +35,14 @@ private slots:
     void onVolumeSliderReleased();
     void getDuration();
     void setPlayTime();
+    int onExit();
+    int onSystemTrayClicked(QSystemTrayIcon::ActivationReason reason);
+    void onPlay();
+    void onPause();
+    void onNext();
+    void onPrevious();
+private:
+    void closeEvent(QCloseEvent* event) override;
 private:
     Ui::PlayerClass ui;
     QMediaPlayer mediaPlayer;
@@ -37,6 +50,9 @@ private:
     QString songPath;
     int playRow;
     qint64 playTime;
+    Lyrics lyric;
+    int lyricID = 0;
+    QSystemTrayIcon pIcon;
 };
 
 #endif

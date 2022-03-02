@@ -15,6 +15,18 @@ Player::Player(QWidget *parent)
 	QStringList files = directory.entryList(nameFilters, QDir::Files | QDir::Readable, QDir::Name);
 	ui.SongList->addItems(files);
 	songPath = fileName;
+	pIcon.setToolTip("Player is running!");
+	pIcon.setIcon(QIcon("F:\\C++\\Qt\\Player\\Player.ico"));
+	//设置托盘菜单
+	QMenu* menus = new QMenu();
+	menus->addAction(ui.actionPlay);
+	menus->addAction(ui.actionPause);
+	menus->addAction(ui.actionNext);
+	menus->addAction(ui.actionPrevious);
+	menus->addSeparator();
+	menus->addAction(ui.actionExit);
+	pIcon.setContextMenu(menus);
+	pIcon.show();
 	connect(ui.btnPlay, SIGNAL(clicked()), this, SLOT(onbtnPlayClicked()));
 	connect(ui.progressBar, SIGNAL(sliderMoved(int)), this, SLOT(onProgressBarMoved(int)));
 	connect(ui.VolumeSlider, SIGNAL(sliderMoved(int)), this, SLOT(onSliderVolumeMoved(int)));
@@ -24,6 +36,17 @@ Player::Player(QWidget *parent)
 	connect(ui.btnPrevious, SIGNAL(clicked()), this, SLOT(onbtnPreviousClicked()));
 	connect(ui.btnNext, SIGNAL(clicked()), this, SLOT(onbtnNextClicked()));
 	connect(ui.btnVolume, SIGNAL(clicked()), this, SLOT(onbtnVolumeClicked()));
+	connect(ui.actionExit, SIGNAL(triggered()), this, SLOT(onExit()));
+	connect(&pIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(onSystemTrayClicked(QSystemTrayIcon::ActivationReason)));
+	connect(ui.actionPlay, SIGNAL(triggered()), this, SLOT(onPlay()));
+	connect(ui.actionPause, SIGNAL(triggered()), this, SLOT(onPause()));
+	connect(ui.actionNext, SIGNAL(triggered()), this, SLOT(onNext()));
+	connect(ui.actionPrevious, SIGNAL(triggered()), this, SLOT(onPrevious()));
+}
+
+Player::~Player()
+{
+	
 }
 
 void Player::onbtnPlayClicked()
@@ -77,11 +100,19 @@ void Player::onListItemDoubleClicked(QListWidgetItem* item)
 	mediaPlayer.stop();
 	mediaPlayer.setMedia(QUrl::fromLocalFile(songPath + "/" + item->text()));
 	mediaPlayer.play();
+	QString name = item->text().left(item->text().lastIndexOf("."));
+	if (!lyric.readLyrics(songPath + "/" + name + ".lrc"))
+	{
+		ui.LabelLyricDetection->setText("无歌词！");
+		ui.LabelLyricFileCheck->setText("检查歌词文件存在性！");
+	}
+	lyricID = 0;
 	ui.progressBar->setValue(mediaPlayer.position());
 	ui.btnPlay->setText("Pause");
 	connect(timer, SIGNAL(timeout()), this, SLOT(setProgressBarValue()));
 	connect(&mediaPlayer, SIGNAL(durationChanged(qint64)), this, SLOT(getDuration()));
 	connect(&mediaPlayer, SIGNAL(positionChanged(qint64)), this, SLOT(setPlayTime()));
+	
 }
 
 void Player::onbtnPreviousClicked()
@@ -137,9 +168,9 @@ void Player::onVolumeSliderReleased()
 
 QString Player::setTime(qint64 time)
 {
-	int hour;
-	int minute;
-	int second;
+	int hour = 0;
+	int minute = 0;
+	int second = 0;
 	time /= 1000;
 	hour = time / 3600;
 	minute = (time - hour * 3600) / 60;
@@ -155,6 +186,77 @@ void Player::getDuration()
 
 void Player::setPlayTime()
 {
+	if(!lyric.getLyricTime().empty()&&mediaPlayer.position()>=lyric.getLyricTime().at(lyricID)&&lyricID<lyric.getLyricTime().size()-1)
+	{
+		ui.LabelLyricDetection->setText(lyric.getLyricText().at(lyricID));
+		ui.LabelLyricFileCheck->setText(lyric.getLyricText().at(lyricID + 1));
+		lyricID++;
+	}
 	ui.playTime->setText(setTime(mediaPlayer.position()));
 }
 
+int Player::onExit()
+{
+	QApplication::exit();
+	return 0;
+}
+
+void Player::closeEvent(QCloseEvent* event)
+{
+	this->hide();
+	event->ignore();
+}
+
+int Player::onSystemTrayClicked(QSystemTrayIcon::ActivationReason reason)
+{
+	if(reason == QSystemTrayIcon::Trigger||reason == QSystemTrayIcon::DoubleClick)
+	{
+		//双击显示主窗口
+		this->showNormal();
+	}
+	return 0;
+}
+
+void Player::onPlay()
+{
+	mediaPlayer.play();
+}
+
+void Player::onPause()
+{
+	mediaPlayer.pause();
+}
+
+void Player::onNext()
+{
+	if (playRow + 1 == ui.SongList->count())
+	{
+		playRow = 0;
+	}
+	else
+	{
+		playRow++;
+	}
+	QListWidgetItem* item = ui.SongList->item(playRow);
+	item->setSelected(true);
+	mediaPlayer.stop();
+	mediaPlayer.setMedia(QUrl::fromLocalFile(songPath + "/" + item->text()));
+	mediaPlayer.play();
+}
+
+void Player::onPrevious()
+{
+	if (playRow == 0)
+	{
+		playRow = ui.SongList->count() - 1;
+	}
+	else
+	{
+		playRow--;
+	}
+	QListWidgetItem* item = ui.SongList->item(playRow);
+	item->setSelected(true);
+	mediaPlayer.stop();
+	mediaPlayer.setMedia(QUrl::fromLocalFile(songPath + "/" + item->text()));
+	mediaPlayer.play();
+}

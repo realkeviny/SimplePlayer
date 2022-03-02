@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>669</width>
+    <width>486</width>
     <height>456</height>
    </rect>
   </property>
@@ -21,10 +21,13 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>../../icons/PlayerIcon.ico</normaloff>../../icons/PlayerIcon.ico</iconset>
+    <normaloff>Player.ico</normaloff>Player.ico</iconset>
+  </property>
+  <property name="layoutDirection">
+   <enum>Qt::LeftToRight</enum>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>11</x>
@@ -58,6 +61,35 @@
         </widget>
        </item>
       </layout>
+     </item>
+     <item>
+      <widget class="QLabel" name="LabelLyricDetection">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="LabelLyricFileCheck">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QListWidget" name="SongList"/>
@@ -164,7 +196,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>669</width>
+     <width>486</width>
      <height>17</height>
     </rect>
    </property>
@@ -200,10 +232,39 @@
     <string>Song..</string>
    </property>
   </action>
+  <action name="actionPlay">
+   <property name="text">
+    <string>播放</string>
+   </property>
+   <property name="toolTip">
+    <string>开始播放</string>
+   </property>
+  </action>
+  <action name="actionPause">
+   <property name="text">
+    <string>暂停</string>
+   </property>
+   <property name="toolTip">
+    <string>已暂停</string>
+   </property>
+  </action>
+  <action name="actionNext">
+   <property name="text">
+    <string>下一曲</string>
+   </property>
+  </action>
+  <action name="actionPrevious">
+   <property name="text">
+    <string>上一曲</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>退出</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="Player.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
