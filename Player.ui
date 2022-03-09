@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>486</width>
-    <height>456</height>
+    <width>500</width>
+    <height>480</height>
    </rect>
   </property>
-  <property name="sizePolicy">
-   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-    <horstretch>0</horstretch>
-    <verstretch>0</verstretch>
-   </sizepolicy>
+  <property name="maximumSize">
+   <size>
+    <width>500</width>
+    <height>480</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Player</string>
@@ -32,8 +32,8 @@
      <rect>
       <x>11</x>
       <y>21</y>
-      <width>470</width>
-      <height>326</height>
+      <width>481</width>
+      <height>356</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -196,7 +196,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>486</width>
+     <width>500</width>
      <height>17</height>
     </rect>
    </property>

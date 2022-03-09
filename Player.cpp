@@ -1,13 +1,14 @@
 #include "Player.h"
+#include <qsizepolicy.h>
+#include <QTimer>
 
 Player::Player(QWidget *parent)
     : QMainWindow(parent)
 {
     ui.setupUi(this);
-	timer = new QTimer();
-	timer->setInterval(2000);
-	timer->start();
+	timerID = startTimer(1000);//启动定时器，指定时间间隔(毫秒)
 	ui.VolumeSlider->setVisible(false);
+
 	QString fileName = "E:/Song";
 	QDir directory(fileName);
 	QStringList nameFilters;
@@ -15,8 +16,16 @@ Player::Player(QWidget *parent)
 	QStringList files = directory.entryList(nameFilters, QDir::Files | QDir::Readable, QDir::Name);
 	ui.SongList->addItems(files);
 	songPath = fileName;
+
 	pIcon.setToolTip("Player is running!");
 	pIcon.setIcon(QIcon("F:\\C++\\Qt\\Player\\Player.ico"));
+
+	QSize sh = ui.SongList->sizeHint();
+	QSizePolicy p = ui.SongList->sizePolicy();
+	QSizePolicy::Policy vp = p.horizontalPolicy();
+
+	QHBoxLayout* Layout = new QHBoxLayout(this);
+
 	//设置托盘菜单
 	QMenu* menus = new QMenu();
 	menus->addAction(ui.actionPlay);
@@ -27,6 +36,7 @@ Player::Player(QWidget *parent)
 	menus->addAction(ui.actionExit);
 	pIcon.setContextMenu(menus);
 	pIcon.show();
+
 	connect(ui.btnPlay, SIGNAL(clicked()), this, SLOT(onbtnPlayClicked()));
 	connect(ui.progressBar, SIGNAL(sliderMoved(int)), this, SLOT(onProgressBarMoved(int)));
 	connect(ui.VolumeSlider, SIGNAL(sliderMoved(int)), this, SLOT(onSliderVolumeMoved(int)));
@@ -47,6 +57,10 @@ Player::Player(QWidget *parent)
 Player::~Player()
 {
 	
+}
+
+void Player::timerEvent(QTimerEvent* event)
+{
 }
 
 void Player::onbtnPlayClicked()
@@ -175,7 +189,9 @@ QString Player::setTime(qint64 time)
 	hour = time / 3600;
 	minute = (time - hour * 3600) / 60;
 	second = time - hour * 3600 - minute * 60;
-	return QString("%1:%2:%3").arg(hour).arg(minute).arg(second);
+	QTime now(hour,minute,second);
+	QString text = now.toString("HH:mm:ss");
+	return text.arg(hour).arg(minute).arg(second);
 }
 
 void Player::getDuration()
@@ -260,3 +276,4 @@ void Player::onPrevious()
 	mediaPlayer.setMedia(QUrl::fromLocalFile(songPath + "/" + item->text()));
 	mediaPlayer.play();
 }
+

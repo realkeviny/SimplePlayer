@@ -13,6 +13,7 @@
 #include <QIcon>
 #include <QMenu>
 #include <QCloseEvent>
+#include <QTime>
 
 class Player : public QMainWindow
 {
@@ -22,6 +23,7 @@ public:
     Player(QWidget *parent = Q_NULLPTR);
     QString setTime(qint64 time);
     ~Player();
+    virtual void timerEvent(QTimerEvent* event) override;
 private slots:
     void onbtnPlayClicked();
     void onProgressBarMoved(int pos);
@@ -47,6 +49,7 @@ private:
     Ui::PlayerClass ui;
     QMediaPlayer mediaPlayer;
     QTimer* timer;
+    int timerID;
     QString songPath;
     int playRow;
     qint64 playTime;
